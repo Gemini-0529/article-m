@@ -50,7 +50,7 @@
                 </template>
             </van-field>
             <div class="login-btn-wrap">
-                <van-button class="login-btn" type="info" block>登录</van-button>
+                <van-button class="login-btn" type="info" block >登录</van-button>
             </div>
         </van-form>
         
@@ -78,7 +78,8 @@ export default {
                 ]
             },
             isCountDownShow: false,//控制倒计时显示
-            isLoading:false
+            isLoading:false,
+
         }
     },
     methods: {
@@ -91,6 +92,9 @@ export default {
             try{
                 const res = await login(this.user)
                 Toast.success('登录成功')
+                this.$router.back()//登录成功跳转回刚才的页面
+                //将登陆成功后返回地数据放入vuex
+                this.$store.commit('setUser',res.data.data)
             }catch(err){
                 console.log(err)
                 Toast.fail('登录失败，手机号或验证码错误')

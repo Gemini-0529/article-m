@@ -7,7 +7,7 @@ module.exports = {
       },
       'postcss-pxtorem': {//px转为rem
         rootValue: 37.5,//转换的根元素基准值(375*667)，根据设计稿设置
-        propList: ['*'],//所有属性都转换
+        propList: ['*'],//所有属性(需要转换的css属性)都转换
       },
     },
   };

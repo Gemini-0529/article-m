@@ -1,6 +1,6 @@
 <template>
     <div class="question-container">
-        question
+        <video></video>
     </div>
 </template>
 <script>
