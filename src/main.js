@@ -10,7 +10,7 @@ import '@/utils/dayjs'
 import { Lazyload } from 'vant';
 Vue.use(Lazyload)
 
-//自动设置REM基准值(html标签字体大小)
+//根据设备不同自动设置REM基准值(html标签字体大小)
 import 'amfe-flexible'
 
 Vue.use(Vant)

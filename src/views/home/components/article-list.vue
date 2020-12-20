@@ -1,5 +1,5 @@
 <template>
-    <div class="article-list">
+    <div class="article-list" ref="article-list">
         <van-pull-refresh v-model="isRefresh"
             success-text="刷新成功"
             :success-duration = "1000"
@@ -27,6 +27,7 @@
 <script>
 import { getArticles } from '@/api/article'
 import ArticleItem from '@/components/article-item/'
+import { debounce } from 'lodash'
 export default {
     name: 'ArticleList',
     props: {
@@ -44,7 +45,8 @@ export default {
             loading: false,//控制加载中的loading状态
             finished: false,//加载结束，不再触发加载更多
             timestamp: null, //获取下一页数据的时间戳
-            isRefresh: false //控制刷新
+            isRefresh: false, //控制刷新
+            scrollTop: 0//屏幕滚动的位置
         }
     },
     methods: {
@@ -59,7 +61,7 @@ export default {
             })
             //数据放入articles数组中
             const { results } = data.data
-            this.articles.push(...results)//扩展运算符
+            this.articles.push(...results)//扩展运算符，否则会把一个数组放进去
             //设置本次加载状态结束，判断是否需要加载下一次，否则会一直转圈
             this.loading = false
             //数据加载完成
@@ -83,7 +85,23 @@ export default {
             //关闭刷新
             this.isRefresh = false
         }
-    }
+    },
+    mounted() {
+        //优化记录查看文章列表位置
+        const list = this.$refs['article-list']
+        debounce(()=> {//利用防抖，以免频繁记录位置，频繁赋值
+          this.scrollTop = list.scrollTop
+        },50)
+    },
+    //组件缓存后，离开后再次进入时，触发
+    activated() {
+        //把记录的距离重新赋值
+        this.$refs['article-list'].scrollTop = this.scrollTop
+    },
+    //组件缓存后，离开失去活动
+    // deactivated() {
+
+    // }
 }
 </script>
 <style lang="less" scoped>

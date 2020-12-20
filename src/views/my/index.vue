@@ -1,31 +1,52 @@
 <template>
     <div class="my-container">
         <van-cell-group class="user-info" v-if="user">
-            <van-cell title="单元格" value="内容"
-                class="base-info" center :border="false">
-                <van-image slot="icon"
-                :src="userInfo.photo"
-                class="avatar"
-                fit="cover" round/>
-                <div slot="title" class="user-name">{{userInfo.name}}</div>
-                <van-icon name="setting-o" size="20"/>
+            <van-cell
+                class="base-info"
+                center
+                :border="false">
+                <van-image
+                    slot="icon"
+                    :src="userInfo.photo"
+                    class="avatar"
+                    fit="cover"
+                    round/>
+                <div
+                    slot="title"
+                    class="user-name">
+                {{userInfo.name ? userInfo.name : 'Gemini'}}</div>
+                <van-icon
+                    name="setting-o"
+                    size="20"
+                    @click="$router.push('/user/userProfile')"
+                />
             </van-cell>
             <van-grid :border="false" class="data-info">
                 <van-grid-item text="头条" class="data-info-item">
-                    <span slot="icon" class="item-count">{{userInfo.art_count}}</span>
+                    <span slot="icon" class="item-count">{{userInfo.art_count? userInfo.art_count : '0'}}</span>
                 </van-grid-item>
                 <van-grid-item text="关注" class="data-info-item">
-                    <span slot="icon" class="item-count">{{userInfo.follow_count}}</span>
+                    <span slot="icon" class="item-count">{{userInfo.follow_count? userInfo.follow_count : '0'}}</span>
                 </van-grid-item>
                 <van-grid-item text="粉丝" class="data-info-item">
-                    <span slot="icon" class="item-count">{{userInfo.fans_count}}</span>
+                    <span slot="icon" class="item-count">{{userInfo.fans_count? userInfo.fans_count : '0'}}</span>
                 </van-grid-item>
                 <van-grid-item text="获赞" class="data-info-item">
-                    <span slot="icon" class="item-count">{{userInfo.like_count}}</span>
+                    <span slot="icon" class="item-count">{{userInfo.like_count? userInfo.like_count : '0'}}</span>
                 </van-grid-item>
             </van-grid>
         </van-cell-group>
-        <div class="unLogin" v-else @click="$router.push('/login')">
+        <!-- 未登录状态显示的内容 -->
+        <div
+            class="unLogin"
+            v-else
+            @click="$router.push({
+                name: 'login',
+                query: {
+                    redirect: '/my'
+                }
+            })"
+        >
             <img src="@/assets/images/unlogin.png" alt="">
             <span>登录 / 注册</span>
         </div>
@@ -35,7 +56,10 @@
         </van-grid>
         <!-- is-link是右侧箭头 -->
         <van-cell title="消息通知" is-link to="" />
-        <van-cell title="小支同学" is-link to="" class="mb-4"/>
+        <van-cell title="小支同学"
+            is-link to="/user/chat"
+            class="mb-4"
+        />
         <van-button block class="login-btn" v-if="user" @click="onLogout">退出登录</van-button>
     </div>
 </template>
@@ -76,7 +100,7 @@ export default {
 <style lang="less" scoped>
 .my-container {
     .user-info {
-        background: url(../../assets/images/userinfo-bg.png) no-repeat;
+        background: url(./images/userinfo-bg.png) no-repeat;
         background-size: cover;
         .base-info {
             //重置背景色
@@ -84,6 +108,7 @@ export default {
             box-sizing: border-box;
             height: 115px;
             padding-top: 38px;
+            padding-bottom: 11px;
             .avatar {
                 width: 66px;
                 height: 66px;
@@ -107,7 +132,6 @@ export default {
             
         }
         .data-info {
-            color: #fff;
             .data-info-item {
                 height: 65px;
                 font-size: 18px;
@@ -130,7 +154,7 @@ export default {
         justify-content: center;
         align-items: center;
         color: #fff;
-        background: url(../../assets/images/userinfo-bg.png) no-repeat;
+        background: url(./images/userinfo-bg.png) no-repeat;
         background-size: cover;
         img {
             width: 66px;
@@ -159,7 +183,7 @@ export default {
         margin-bottom: 4px;
     }
     .login-btn {
-        color: #1989fa;
+        color: #d86262;
     }
 }
 </style>

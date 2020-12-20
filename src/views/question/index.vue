@@ -1,6 +1,8 @@
 <template>
     <div class="question-container">
-        <video></video>
+        <van-cell value="内容" icon="location-o">
+            
+        </van-cell>
     </div>
 </template>
 <script>

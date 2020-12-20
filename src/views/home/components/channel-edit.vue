@@ -14,7 +14,7 @@
         </van-cell>
         <van-grid :gutter="10">
             <van-grid-item
-                v-for="(item,index) of userChannels"
+                v-for="(item,index) in userChannels"
                 :key="index"
                 :text="item.name"
                 class="grid-item"
@@ -43,6 +43,8 @@ import {
     updateUserChannel,
     delUserChannel
 } from '@/api/channel'
+import { mapState } from 'vuex'
+import { setItem } from '@/utils/storage'
 export default {
     name: 'ChannelEdit',
     props: {
@@ -50,7 +52,7 @@ export default {
             type: Array,
             required: true
         },
-        active: {
+        active: {//接收父组件传来的激活标签项的索引
             type: Number,
             required: true
         }
@@ -70,22 +72,27 @@ export default {
             this.allChannels = data.data.channels
         },
         async addChannel(channel) {
+            //把点击的频道添加至我的频道
             this.userChannels.push(channel)
 
             //数据持久化
             if(this.user) {
+                //如果登录了，数据存储到线上
                 await updateUserChannel({
                     channels: [{
                         id: channel.id,
                         seq: this.userChannels.length
                     }]
                 })
+            } else {
+                //没登录，数据存储到本地
+                setItem('user-channels',this.userChannels)
             }
         },
         //我的频道操作
         onUserChannelClick(item,index) {
+            //如果是编辑状态并且索引不为0(推荐)，删除频道
             if(this.isEdit && index !== 0) {
-                //如果是编辑状态并且索引不为0(推荐)，删除频道
                 this.delChannel(item,index)
             }else {
                 //切换进入频道
@@ -93,30 +100,30 @@ export default {
             }
         },
         async delChannel(item,index) {
-            //如果删除的频道索引在激活频道索引之前，需要更新所引值
+            //如果删除的频道索引在激活频道索引之前，需要更新索引值
             if(index <= this.active) {
                 this.$emit('update-active',this.active - 1)
             }
             //删除指定索引频道
             this.userChannels.splice(index,1)
             //数据持久化
-            if(this.$store.state.user){
+            if(this.user){
                 //登陆了，持久化到线上
                 await delUserChannel(item.id)
-                console.log(item.id)
             }else{
-                console.log(1)
+                setItem('user-channels',this.userChannels)
             }
         },
         switchChannel(index) {
             //把点击的频道index发送给父组件
             this.$emit('update-active',index)
-            //向父组件传递方法修改关闭弹出层
+            //向父组件传递方法关闭弹出层
             this.$emit('close')
 
         }
     },
     computed: {
+        ...mapState(['user']),
         //推荐的频道列表
         recommendChannels() {
             // //filter：过滤数据，根据布尔值收集数据
@@ -124,7 +131,7 @@ export default {
             return this.allChannels.filter(channel => {
                 //判断channel是否属于用户频道
                 return !this.userChannels.find(userChannel => {
-                    //找到满足条件的元素
+                    //找到满足条件的单个元素
                     return userChannel.id === channel.id
                 })
             })

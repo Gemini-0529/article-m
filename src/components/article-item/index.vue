@@ -1,5 +1,12 @@
 <template>
-    <van-cell class="article-item">
+    <van-cell
+        class="article-item"
+        :to="{
+            name: 'article',
+            params: {
+                articleId:article.art_id
+            }
+        }">
         <div slot="title" class="title van-multi-ellipsis--13">{{article.title}}</div>
         <div slot="label">
             <!-- 三张封面图 -->
@@ -18,7 +25,7 @@
             </div>
             <div class="label-content">
                 <span>{{ article.aut_name }}</span>
-                <span>{{ article.comm_count }}</span>
+                <span>{{ article.comm_count }}评论</span>
                 <span>{{ article.pubdate | relativeTime }}</span>
             </div>
         </div>
